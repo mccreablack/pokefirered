@@ -36,6 +36,8 @@
 #include "constants/abilities.h"
 #include "constants/pokemon.h"
 #include "constants/maps.h"
+#include "constants/level_caps.h"
+
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
 
@@ -3222,6 +3224,18 @@ static void Cmd_getexp(void)
 
                 if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP))
                 {
+                    u8 level = GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL);
+                    u8 cap = GetCurrentLevelCap(); // Make sure to #include "constants/level_cap.h"
+
+                    if (level >= cap)
+                        {
+                             // Skip giving this Pokémon EXP
+                         gBattleStruct->sentInPokes >>= 1;
+                         gBattleScripting.getexpState = 5;
+                         gBattleMoveDamage = 0;
+                        break;
+                        }
+
                     if (gBattleStruct->sentInPokes & 1)
                         gBattleMoveDamage = *exp;
                     else
