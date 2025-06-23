@@ -68,6 +68,7 @@
 #include "constants/quest_log.h"
 #include "constants/songs.h"
 #include "constants/sound.h"
+#include "constants/level_caps.h"
 
 #define PARTY_PAL_SELECTED     (1 << 0)
 #define PARTY_PAL_FAINTED      (1 << 1)
@@ -5020,11 +5021,30 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc func)
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
     u16 item = gSpecialVar_ItemId;
     bool8 noEffect;
+    u8 level = GetMonData(mon, MON_DATA_LEVEL);
+    u8 levelCap = GetCurrentLevelCap();
 
-    if (GetMonData(mon, MON_DATA_LEVEL) != MAX_LEVEL)
-        noEffect = PokemonItemUseNoEffect(mon, item, gPartyMenu.slotId, 0);
-    else
-        noEffect = TRUE;
+    // 🧁 Endless Candy should ignore PokemonItemUseNoEffect
+    if (item == ITEM_ENDLESS_CANDY)
+    {
+        if (level >= levelCap || level == MAX_LEVEL)
+        {
+            noEffect = TRUE;
+        }
+        else
+        {
+            noEffect = FALSE; // Allow it
+        }
+    }
+    else // normal Rare Candy
+    {
+        if (level != MAX_LEVEL)
+            noEffect = PokemonItemUseNoEffect(mon, item, gPartyMenu.slotId, 0);
+        else
+            noEffect = TRUE;
+    }
+
+    
     PlaySE(SE_SELECT);
     if (noEffect)
     {
@@ -5048,13 +5068,17 @@ static void ItemUseCB_RareCandyStep(u8 taskId, TaskFunc func)
     u8 level;
 
     GetMonLevelUpWindowStats(mon, arrayPtr);
-    ExecuteTableBasedItemEffect_(gPartyMenu.slotId, gSpecialVar_ItemId, 0);
+    ExecuteTableBasedItemEffect_(gPartyMenu.slotId, ITEM_RARE_CANDY, 0);
     GetMonLevelUpWindowStats(mon, &ptr->data[NUM_STATS]);
     gPartyMenuUseExitCallback = TRUE;
-    ItemUse_SetQuestLogEvent(QL_EVENT_USED_ITEM, mon, gSpecialVar_ItemId, 0xFFFF);
+    ItemUse_SetQuestLogEvent(QL_EVENT_USED_ITEM, mon, ITEM_RARE_CANDY, 0xFFFF);
     PlayFanfareByFanfareNum(FANFARE_LEVEL_UP);
     UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
-    RemoveBagItem(gSpecialVar_ItemId, 1);
+
+    // 🧁 Skip removing item if Endless Candy
+    if (gSpecialVar_ItemId != ITEM_ENDLESS_CANDY)
+        RemoveBagItem(gSpecialVar_ItemId, 1);
+
     GetMonNickname(mon, gStringVar1);
     level = GetMonData(mon, MON_DATA_LEVEL);
     ConvertIntToDecimalStringN(gStringVar2, level, STR_CONV_MODE_LEFT_ALIGN, 3);
@@ -5063,6 +5087,7 @@ static void ItemUseCB_RareCandyStep(u8 taskId, TaskFunc func)
     ScheduleBgCopyTilemapToVram(2);
     gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
 }
+
 
 static void UpdateMonDisplayInfoAfterRareCandy(u8 slot, struct Pokemon *mon)
 {

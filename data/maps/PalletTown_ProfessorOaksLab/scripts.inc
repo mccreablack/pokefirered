@@ -1276,6 +1276,29 @@ PalletTown_ProfessorOaksLab_EventScript_Aide3::
 	release
 	end
 
+EventScript_OaksAide_EndlessCandy::
+    lock
+    faceplayer
+	goto_if_set FLAG_SYS_POKEDEX_GET, .HasPokedex
+    msgbox gText_OaksAideNoPokedex
+    release
+    end
+
+.HasPokedex:
+    goto_if_set FLAG_GOT_ENDLESS_CANDY, .AlreadyGave
+    msgbox gText_OaksAideGift 
+    giveitem ITEM_ENDLESS_CANDY 1
+    setflag FLAG_GOT_ENDLESS_CANDY
+    msgbox gText_OaksAideEnjoy 
+    release
+    end
+
+.AlreadyGave:
+    msgbox gText_OaksAideAlreadyGave 
+    release
+    end
+
+
 PalletTown_ProfessorOaksLab_EventScript_Pokedex::
 	msgbox PalletTown_ProfessorOaksLab_Text_BlankEncyclopedia, MSGBOX_NPC
 	end

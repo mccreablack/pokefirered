@@ -1314,9 +1314,9 @@
 #define FLAG_0x4FC               0x4FC
 #define FLAG_0x4FD               0x4FD
 #define FLAG_0x4FE               0x4FE
-#define FLAG_0x4FF               0x4FF
+#define FLAG_GOT_ENDLESS_CANDY   0x4FF
 
-#define TRAINER_FLAGS_START      (FLAG_0x4FF + 1)
+#define TRAINER_FLAGS_START      (FLAG_GOT_ENDLESS_CANDY + 1)
 #define TRAINER_FLAGS_END        (TRAINER_FLAGS_START + MAX_TRAINERS_COUNT - 1) // 0x7FF
 
 // SYSTEM FLAGS
@@ -1522,6 +1522,7 @@
 #define FLAG_0x8FD                                                  (SYS_FLAGS + 0xFD)
 #define FLAG_0x8FE                                                  (SYS_FLAGS + 0xFE)
 #define FLAG_0x8FF                                                  (SYS_FLAGS + 0xFF)
+                                   
 
 #define FLAGS_COUNT (FLAG_0x8FF + 1)
 

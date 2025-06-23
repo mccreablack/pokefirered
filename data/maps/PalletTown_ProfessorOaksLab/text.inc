@@ -355,3 +355,14 @@ PalletTown_ProfessorOaksLab_Text_RivalIllCompleteThePokedex::
     .string "ONE ISLAND first…\p"
     .string "Anyways, I'm outta here!$"
 
+gText_OaksAideGift:
+    .string "Here, take this special item from Professor Oak!$"
+
+gText_OaksAideEnjoy:
+    .string "This candy acts like a Rare Candy,\nbut it never runs out!$"
+
+gText_OaksAideAlreadyGave:
+    .string "I already gave you the Endless Candy.$"
+
+gText_OaksAideNoPokedex:
+    .string "You should talk to Professor Oak first.\nHe needs to give you the Pokédex.$"

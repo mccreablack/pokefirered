@@ -430,6 +430,14 @@ void FieldUseFunc_RareCandy(u8 taskId)
     DoSetUpItemUseCallback(taskId);
 }
 
+void FieldUseFunc_EndlessCandy(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_RareCandy;
+    DoSetUpItemUseCallback(taskId);
+}
+
+
+
 void FieldUseFunc_EvoItem(u8 taskId)
 {
     gItemUseCB = ItemUseCB_EvolutionStone;
